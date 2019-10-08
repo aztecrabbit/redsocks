@@ -6,13 +6,12 @@ class redsocks(object):
     def __init__(self, enable=True):
         super(redsocks, self).__init__()
 
+        self.libutils = utils(__file__)
         self.enable = enable
-
-        self.utils = utils(__file__)
 
         self.log_info = 'off'
         self.log_debug = 'off'
-        self.log_output = self.utils.real_path('/blib_redsocks.log')
+        self.log_output = self.libutils.real_path('/redsocks.log')
 
         self.local_ip = '127.0.0.1'
         self.local_port = '3070'
@@ -23,7 +22,7 @@ class redsocks(object):
         self.login = ''
         self.password = ''
 
-        self.redsocks_config = self.utils.real_path('/blib_redsocks.conf')
+        self.redsocks_config = self.libutils.real_path('/redsocks.conf')
 
     def log(self, value):
         self.liblog.log(f'Executing: {value}', color='[P1]', type=3)
@@ -129,7 +128,7 @@ redsocks {
             return True
 
     def rule_direct_insert(self, host):
-        self.execute(f'iptables -t nat -I REDSOCKS -d {host} -j RETURN')
+        self.execute(f'iptables -t nat -I REDSOCKS -d {host} -j RETURN > /dev/null 2>&1')
 
     def rule_direct_update(self, host):
         result = self.rule_direct_check(host)
