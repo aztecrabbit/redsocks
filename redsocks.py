@@ -1,4 +1,6 @@
 import os
+import sys
+import sysconfig
 import subprocess
 from ..utils.utils import utils
 
@@ -62,22 +64,22 @@ redsocks {
     password = "{password}";
 }
 
-// Generated from blib_redsocks.py
+// Generated from Brainfuck Tunnel Libraries (redsocks.py)
 // (c) 2019 Aztec Rabbit.
 '''
-        config = config.strip()                         \
-            .replace('{log_info}', self.log_info)       \
-            .replace('{log_debug}', self.log_debug)     \
-            .replace('{log_output}', self.log_output)   \
-                                                        \
-            .replace('{local_ip}', self.local_ip)       \
-            .replace('{local_port}', self.local_port)   \
-                                                        \
-            .replace('{ip}', self.ip)                   \
-            .replace('{port}', self.port)               \
-            .replace('{type}', self.type)               \
-            .replace('{login}', self.login)             \
-            .replace('{password}', self.password)  
+        config = config.strip()                             \
+            .replace('{log_info}', str(self.log_info))      \
+            .replace('{log_debug}', str(self.log_debug))    \
+            .replace('{log_output}', str(self.log_output))  \
+                                                            \
+            .replace('{local_ip}', str(self.local_ip))      \
+            .replace('{local_port}', str(self.local_port))  \
+                                                            \
+            .replace('{ip}', str(self.ip))                  \
+            .replace('{port}', str(self.port))              \
+            .replace('{type}', str(self.type))              \
+            .replace('{login}', str(self.login))            \
+            .replace('{password}', str(self.password))  
         self.execute(f"echo '{config}' > {self.redsocks_config}")
 
     def start(self):
@@ -96,6 +98,9 @@ redsocks {
             'redsocks -c {}'.format(self.redsocks_config),
         ]
 
+        if not self.enabled() and sysconfig.get_platform() in ['linux-x86_64']:
+            self.liblog.log('Redsocks disabled, maybe you are not running as root?', color='[R1]', type=0)
+
         self.stop()
         self.create_config()
 
@@ -112,6 +117,9 @@ redsocks {
             'iptables -t nat -Z',
             'killall redsocks > /dev/null 2>&1',
         ]
+
+        sys.stdout.write('      \r')
+        sys.stdout.flush()
 
         for command in commands:
             self.execute(command)
