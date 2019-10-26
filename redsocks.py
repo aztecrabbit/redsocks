@@ -30,7 +30,10 @@ class redsocks(object):
         self.liblog.log(f'Executing: {value}', color='[P1]', type=3)
 
     def user_is_superuser(self):
-        return True if os.getuid() == 0 else False
+        try:
+            return True if os.getuid() == 0 else False
+        except AttributeError:
+            return False
 
     def enabled(self):
          return self.enable if self.user_is_superuser() else False
