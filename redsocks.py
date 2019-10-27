@@ -1,6 +1,5 @@
 import os
 import sys
-import sysconfig
 import subprocess
 from ..utils.utils import utils
 
@@ -100,9 +99,6 @@ redsocks {
             'iptables -t nat -A OUTPUT -p tcp -j REDSOCKS',
             'redsocks -c {}'.format(self.redsocks_config),
         ]
-
-        if not self.enabled() and sysconfig.get_platform() in ['linux-x86_64']:
-            self.liblog.log('Redsocks disabled, maybe you are not running as root?', color='[R1]', type=0)
 
         self.stop()
         self.create_config()
