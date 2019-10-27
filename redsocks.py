@@ -123,6 +123,12 @@ redsocks {
         for command in commands:
             self.execute(command)
 
+        try:
+            os.remove(self.log_output)
+            os.remove(self.redsocks_config)
+        except FileNotFoundError:
+            pass
+
     def rule_direct_check(self, host):
         if not self.enabled():
             return None
