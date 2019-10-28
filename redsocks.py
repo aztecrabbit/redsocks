@@ -14,7 +14,7 @@ class redsocks(object):
         self.log_debug = 'off'
         self.log_output = self.libutils.real_path('/redsocks.log')
 
-        self.local_ip = '127.0.0.1'
+        self.local_ip = '0.0.0.0'
         self.local_port = '3070'
 
         self.ip = '127.0.0.1'
