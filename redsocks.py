@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 import subprocess
 from ..utils.utils import utils
 
@@ -30,7 +31,7 @@ class redsocks(object):
 
     def user_is_superuser(self):
         try:
-            return True if os.getuid() == 0 else False
+            return True if os.getuid() == 0 and shutil.which('redsocks') else False
         except AttributeError:
             return False
 
