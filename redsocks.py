@@ -118,7 +118,7 @@ redsocks {
             'killall redsocks > /dev/null 2>&1',
         ]
 
-        sys.stdout.write('      \r')
+        sys.stdout.write('\033[K' + '\033[0m' + '\r')
         sys.stdout.flush()
 
         for command in commands:
