@@ -97,7 +97,8 @@ redsocks {
             'iptables -t nat -A REDSOCKS -d 224.0.0.0/4 -j RETURN',
             'iptables -t nat -A REDSOCKS -d 240.0.0.0/4 -j RETURN',
             'iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 3070',
-            'iptables -t nat -A OUTPUT -p tcp -j REDSOCKS',
+            'iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 3070',
+            'iptables -t nat -A OUTPUT -j REDSOCKS',
             'redsocks -c {}'.format(self.redsocks_config),
         ]
 
