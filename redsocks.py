@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from ..utils.utils import utils
 
+
 class redsocks(object):
     def __init__(self, enable=True):
         super(redsocks, self).__init__()
@@ -36,7 +37,7 @@ class redsocks(object):
             return False
 
     def enabled(self):
-         return self.enable if self.user_is_superuser() else False
+        return self.enable if self.user_is_superuser() else False
 
     def execute(self, command):
         if not self.enabled():
@@ -46,8 +47,7 @@ class redsocks(object):
         os.system(command)
 
     def create_config(self):
-        config = \
-'''
+        config = """
 base {
     log_info = {log_info};
     log_debug = {log_debug};
@@ -69,7 +69,7 @@ redsocks {
 
 // Generated from Brainfuck Tunnel Libraries (redsocks.py)
 // (c) 2019 Aztec Rabbit.
-'''
+"""
         config = config.strip()                             \
             .replace('{log_info}', str(self.log_info))      \
             .replace('{log_debug}', str(self.log_debug))    \
@@ -82,7 +82,7 @@ redsocks {
             .replace('{port}', str(self.port))              \
             .replace('{type}', str(self.type))              \
             .replace('{login}', str(self.login))            \
-            .replace('{password}', str(self.password))  
+            .replace('{password}', str(self.password))
         self.execute(f"echo '{config}' > {self.redsocks_config}")
 
     def start(self):
@@ -136,16 +136,20 @@ redsocks {
             return None
 
         with self.liblog.lock:
-            process = subprocess.Popen(f'iptables -t nat -C REDSOCKS -d {host} -j RETURN'.split(' '), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            process = subprocess.Popen(
+                f"iptables -t nat -C REDSOCKS -d {host} -j RETURN".split(' '),
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in process.stdout:
                 return False
 
             return True
 
     def rule_direct_insert(self, host):
-        self.execute(f'iptables -t nat -I REDSOCKS -d {host} -j RETURN > /dev/null 2>&1')
+        if not self.enabled():
+            return None
+
+        self.execute(f"iptables -t nat -I REDSOCKS -d {host} -j RETURN > /dev/null 2>&1")
 
     def rule_direct_update(self, host):
-        result = self.rule_direct_check(host)
-        if not result and result is not None:
+        if not self.rule_direct_check(host):
             self.rule_direct_insert(host)
